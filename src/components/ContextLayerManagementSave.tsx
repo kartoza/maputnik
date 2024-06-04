@@ -37,7 +37,7 @@ export default function ContextLayerManagementSave(props: ModalOpenProps) {
     props.onOpenToggle();
   }
 
-  const submit = (event) => {
+  const submit = (event: React.FormEvent) => {
     const data = {
       name: name,
       isDefault: isDefault,
@@ -100,7 +100,7 @@ export default function ContextLayerManagementSave(props: ModalOpenProps) {
             <h1>Is default</h1>
             <InputCheckbox
               value={isDefault}
-              onChange={evt => setIsDefault(evt)}
+              onChange={evt => setIsDefault(!!evt)}
               disabled={saving}
             />
             <br/>
