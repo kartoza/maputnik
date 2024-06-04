@@ -228,7 +228,7 @@ export default class AppToolbar extends React.Component<AppToolbarProps> {
           {/*  <MdSettings />*/}
           {/*  <IconText>Style Settings</IconText>*/}
           {/*</ToolbarAction>*/}
-          <ToolbarAction wdKey="nav:saveAs" onClick={this.props.onToggleModal.bind(this, 'saveAs')}>
+          <ToolbarAction wdKey="nav:save" onClick={this.props.onToggleModal.bind(this, 'save')}>
             <MdOutlineSave />
             <IconText>Save</IconText>
           </ToolbarAction>

@@ -132,7 +132,7 @@ type AppState = {
     export: boolean
     survey: boolean
     debug: boolean
-    saveAs: boolean
+    save: boolean
   }
 }
 
@@ -243,7 +243,9 @@ export default class App extends React.Component<any, AppState> {
           console.log('Falling back to local storage for storing styles')
           this.styleStore = new StyleStore()
         }
-        this.styleStore.latestStyle(mapStyle => this.onStyleChanged(mapStyle, {initialLoad: true}))
+        // TODO:
+        //  Context Layer Management does not need latest style
+        // this.styleStore.latestStyle(mapStyle => this.onStyleChanged(mapStyle, {initialLoad: true}))
 
         if(Debug.enabled()) {
           Debug.set("maputnik", "styleStore", this.styleStore);
@@ -282,7 +284,7 @@ export default class App extends React.Component<any, AppState> {
         // TODO: Disabled for now, this should be opened on the Nth visit to the editor
         survey: false,
         debug: false,
-        saveAs: false,
+        save: false,
       },
       maplibreGlDebugOptions: {
         showTileBoundaries: false,
@@ -983,9 +985,9 @@ export default class App extends React.Component<any, AppState> {
         onStyleOpen={this.openStyle}
       />
       <ContextLayerManagementSave
-        isOpen={this.state.isOpen.saveAs}
-        onStyleOpen={this.onStyleChanged}
-        onOpenToggle={this.toggleModal.bind(this, 'saveAs')}
+        isOpen={this.state.isOpen.save}
+        style={this.state.mapStyle}
+        onOpenToggle={this.toggleModal.bind(this, 'save')}
       />
     </div>
 

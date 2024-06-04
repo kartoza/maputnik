@@ -8,15 +8,14 @@ type ModalOpenProps = {
 
 type ModalOpenState = {
   isOpen: boolean,
-  error: string
+  error?: string | null
 };
 
 export default class ContextLayerManagement extends React.Component<ModalOpenProps, ModalOpenState> {
   constructor(props: ModalOpenProps) {
     super(props);
     this.state = {
-      isOpen: true,
-      error: ''
+      isOpen: true
     }
     const url = new URL(document.URL);
     const styleUrl = '' + url.searchParams.get('styleUrl');
@@ -81,12 +80,15 @@ export default class ContextLayerManagement extends React.Component<ModalOpenPro
           isOpen={this.state.isOpen}
           onOpenToggle={_ => {
           }}
-          title={'Loading Style'}
+          title={errorElement ? 'Error on Loading Style' : 'Loading Style'}
         >
           {errorElement}
-          <section className="maputnik-modal-section">
-            <h1>Loading Style</h1>
-          </section>
+          {
+            !errorElement ?
+              <section className="maputnik-modal-section">
+                <h1>Loading Style</h1>
+              </section> : null
+          }
         </Modal>
       </div>
     )
