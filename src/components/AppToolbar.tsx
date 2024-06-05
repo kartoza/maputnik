@@ -2,7 +2,7 @@ import React from 'react'
 import classnames from 'classnames'
 import {detect} from 'detect-browser';
 
-import {MdFileDownload, MdOpenInBrowser, MdSettings, MdLayers, MdHelpOutline, MdFindInPage} from 'react-icons/md'
+import {MdHelpOutline, MdFindInPage, MdOutlineSave} from 'react-icons/md'
 import pkgJson from '../../package.json'
 //@ts-ignore
 import maputnikLogo from 'maputnik-design/logos/logo-color.svg?inline'
@@ -204,21 +204,33 @@ export default class AppToolbar extends React.Component<AppToolbarProps> {
           </a>
         </div>
         <div className="maputnik-toolbar__actions" role="navigation" aria-label="Toolbar">
-          <ToolbarAction wdKey="nav:open" onClick={this.props.onToggleModal.bind(this, 'open')}>
-            <MdOpenInBrowser />
-            <IconText>Open</IconText>
-          </ToolbarAction>
-          <ToolbarAction wdKey="nav:export" onClick={this.props.onToggleModal.bind(this, 'export')}>
-            <MdFileDownload />
-            <IconText>Export</IconText>
-          </ToolbarAction>
-          <ToolbarAction wdKey="nav:sources" onClick={this.props.onToggleModal.bind(this, 'sources')}>
-            <MdLayers />
-            <IconText>Data Sources</IconText>
-          </ToolbarAction>
-          <ToolbarAction wdKey="nav:settings" onClick={this.props.onToggleModal.bind(this, 'settings')}>
-            <MdSettings />
-            <IconText>Style Settings</IconText>
+          {/* TODO: */}
+          {/*  -------------------------------------- */}
+          {/*  Specified for context layer management */}
+          {/*<ToolbarAction wdKey="nav:open" onClick={this.props.onToggleModal.bind(this, 'open')}>*/}
+          {/*  <MdOpenInBrowser />*/}
+          {/*  <IconText>Open</IconText>*/}
+          {/*</ToolbarAction>*/}
+          {/*<ToolbarAction wdKey="nav:export" onClick={this.props.onToggleModal.bind(this, 'export')}>*/}
+          {/*  <MdFileDownload />*/}
+          {/*  <IconText>Export</IconText>*/}
+          {/*</ToolbarAction>*/}
+          {/*<ToolbarAction wdKey="nav:sources" onClick={this.props.onToggleModal.bind(this, 'sources')}>*/}
+          {/*  <MdLayers />*/}
+          {/*  <IconText>Data Sources</IconText>*/}
+          {/*</ToolbarAction>*/}
+          {/*<ToolbarAction wdKey="nav:settings" onClick={this.props.onToggleModal.bind(this, 'settings')}>*/}
+          {/*  <MdSettings />*/}
+          {/*  <IconText>Style Settings</IconText>*/}
+          {/*</ToolbarAction>*/}
+          {/*  -------------------------------------- */}
+          {/*<ToolbarAction wdKey="nav:settings" onClick={this.props.onToggleModal.bind(this, 'settings')}>*/}
+          {/*  <MdSettings />*/}
+          {/*  <IconText>Style Settings</IconText>*/}
+          {/*</ToolbarAction>*/}
+          <ToolbarAction wdKey="nav:save" onClick={this.props.onToggleModal.bind(this, 'save')}>
+            <MdOutlineSave />
+            <IconText>Save</IconText>
           </ToolbarAction>
 
           <ToolbarSelect wdKey="nav:inspect">

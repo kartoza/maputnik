@@ -91,3 +91,12 @@ a {
 .hide {
   display: none !important;
 }
+
+.style-loading {
+  text-align: center;
+
+  .maputnik-modal-header-toggle,
+  .maputnik-dialog__buttons {
+    opacity: 0;
+  }
+}

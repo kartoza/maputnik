@@ -4,6 +4,7 @@ export type InputCheckboxProps = {
   value?: boolean
   style?: object
   onChange(...args: unknown[]): unknown
+  disabled?: boolean
 };
 
 export default class InputCheckbox extends React.Component<InputCheckboxProps> {
@@ -24,6 +25,7 @@ export default class InputCheckbox extends React.Component<InputCheckboxProps> {
         onChange={this.onChange}
         onClick={this.onChange}
         checked={this.props.value}
+        disabled={this.props.disabled}
       />
       <div className="maputnik-checkbox-box">
         <svg style={{
