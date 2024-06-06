@@ -26,8 +26,6 @@ import ModalOpen from './ModalOpen'
 import ModalShortcuts from './ModalShortcuts'
 import ModalSurvey from './ModalSurvey'
 import ModalDebug from './ModalDebug'
-import ContextLayerManagement from "./ContextLayerManagement";
-import ContextLayerManagementSave from "./ContextLayerManagementSave";
 
 import {downloadGlyphsMetadata, downloadSpriteMetadata} from '../libs/metadata'
 import style from '../libs/style'
@@ -132,7 +130,6 @@ type AppState = {
     export: boolean
     survey: boolean
     debug: boolean
-    save: boolean
   }
 }
 
@@ -284,7 +281,6 @@ export default class App extends React.Component<any, AppState> {
         // TODO: Disabled for now, this should be opened on the Nth visit to the editor
         survey: false,
         debug: false,
-        save: false,
       },
       maplibreGlDebugOptions: {
         showTileBoundaries: false,
@@ -980,14 +976,6 @@ export default class App extends React.Component<any, AppState> {
       <ModalSurvey
         isOpen={this.state.isOpen.survey}
         onOpenToggle={this.toggleModal.bind(this, 'survey')}
-      />
-      <ContextLayerManagement
-        onStyleOpen={this.openStyle}
-      />
-      <ContextLayerManagementSave
-        isOpen={this.state.isOpen.save}
-        style={this.state.mapStyle}
-        onOpenToggle={this.toggleModal.bind(this, 'save')}
       />
     </div>
 

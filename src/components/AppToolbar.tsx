@@ -2,10 +2,11 @@ import React from 'react'
 import classnames from 'classnames'
 import {detect} from 'detect-browser';
 
-import {MdHelpOutline, MdFindInPage, MdOutlineSave} from 'react-icons/md'
+import { MdHelpOutline, MdFindInPage, MdSettings } from 'react-icons/md'
 import pkgJson from '../../package.json'
 //@ts-ignore
 import maputnikLogo from 'maputnik-design/logos/logo-color.svg?inline'
+import CloudNativeGIS from "./CloudNativeGIS/Main.tsx";
 
 // This is required because of <https://stackoverflow.com/a/49846426>, there isn't another way to detect support that I'm aware of.
 const browser = detect();
@@ -49,7 +50,7 @@ type ToolbarSelectProps = {
   wdKey?: string
 };
 
-class ToolbarSelect extends React.Component<ToolbarSelectProps> {
+export class ToolbarSelect extends React.Component<ToolbarSelectProps> {
   render() {
     return <div
       className='maputnik-toolbar-select'
@@ -66,7 +67,7 @@ type ToolbarActionProps = {
   wdKey?: string
 };
 
-class ToolbarAction extends React.Component<ToolbarActionProps> {
+export class ToolbarAction extends React.Component<ToolbarActionProps> {
   render() {
     return <button
       className='maputnik-toolbar-action'
@@ -163,6 +164,7 @@ export default class AppToolbar extends React.Component<AppToolbarProps> {
       return view.id === this.props.mapState;
     });
 
+    // @ts-ignore
     return <nav className='maputnik-toolbar'>
       <div className="maputnik-toolbar__inner">
         <div
@@ -224,13 +226,14 @@ export default class AppToolbar extends React.Component<AppToolbarProps> {
           {/*  <IconText>Style Settings</IconText>*/}
           {/*</ToolbarAction>*/}
           {/*  -------------------------------------- */}
-          {/*<ToolbarAction wdKey="nav:settings" onClick={this.props.onToggleModal.bind(this, 'settings')}>*/}
-          {/*  <MdSettings />*/}
-          {/*  <IconText>Style Settings</IconText>*/}
-          {/*</ToolbarAction>*/}
-          <ToolbarAction wdKey="nav:save" onClick={this.props.onToggleModal.bind(this, 'save')}>
-            <MdOutlineSave />
-            <IconText>Save</IconText>
+          <CloudNativeGIS
+            onStyleOpen={this.props.onStyleOpen}
+            mapStyle={this.props.mapStyle}
+            ToolbarAction={ToolbarAction}
+          />
+          <ToolbarAction wdKey="nav:settings" onClick={this.props.onToggleModal.bind(this, 'settings')}>
+            <MdSettings />
+            <IconText>Style Settings</IconText>
           </ToolbarAction>
 
           <ToolbarSelect wdKey="nav:inspect">

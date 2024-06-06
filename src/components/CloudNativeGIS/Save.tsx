@@ -1,63 +1,75 @@
 import React, { useEffect, useState } from 'react';
-import Modal from './Modal'
-import { StyleSpecification } from "maplibre-gl";
-import InputString from "./InputString.tsx";
-import InputButton from "./InputButton.tsx";
-import InputCheckbox from "./InputCheckbox.tsx";
+import { MdOutlineSave } from "react-icons/md";
+import Modal from '../Modal'
+import { ToolbarAction } from '../AppToolbar.tsx'
+import InputString from "../InputString.tsx";
+import InputButton from "../InputButton.tsx";
+import InputCheckbox from "../InputCheckbox.tsx";
+import { StyleProps } from "./Main.tsx";
 
-
+declare global {
+  interface Window {
+    csrfmiddlewaretoken: any;
+  }
+}
 type ModalOpenProps = {
-  isOpen: boolean
-  style: StyleSpecification & { id: string }
-  onOpenToggle(...args: unknown[]): unknown
+  style?: StyleProps
+  mapStyle: object
 };
 
-export default function ContextLayerManagementSave(props: ModalOpenProps) {
-  const url = new URL(document.URL);
-  const styleUrl = '' + url.searchParams.get('styleUrl');
-
-  const [name, setName] = useState<string | undefined>('');
-  const [isDefault, setIsDefault] = useState<boolean>(false);
+export default function CloudNativeGISSave(props: ModalOpenProps) {
+  const styleName = props.style?.name
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [error, setError] = useState<string | null>();
   const [saving, setSaving] = useState<boolean>(false);
 
+  const [name, setName] = useState<string | undefined>('');
+  const [isDefault, setIsDefault] = useState<boolean>(false);
+
   // When props is changed
   useEffect(() => {
-    if (!name && props.style?.name) {
+    if (props.style) {
       setName(props.style.name)
     }
-  }, [name, props.style?.name])
+  }, [props.style])
 
   const clearError = () => {
     setError(null)
   }
 
   const onOpenToggle = () => {
-    clearError();
-    props.onOpenToggle();
+    clearError()
+    setIsOpen(!isOpen)
   }
 
   const submit = (event: React.FormEvent) => {
+    if (!props.style?.style_url) {
+      event.preventDefault();
+      return
+    }
+    // @ts-ignore
+    const saveAs = event.nativeEvent.submitter.className.includes('save-as-button')
     const data = {
       name: name,
       isDefault: isDefault,
-      style: props.style
+      style: props.mapStyle,
+      saveAs: saveAs
     }
     setSaving(true)
-
-    fetch(styleUrl, {
+    fetch(props.style.style_url, {
       mode: 'cors',
       credentials: "same-origin",
       method: 'PUT',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-CSRFToken': window.csrfmiddlewaretoken
       },
       body: JSON.stringify(data)
     }).then(function (response) {
       return response.json()
-    }).then(function (response) {
-      window.location = response
+    }).then(function () {
+      window.location.reload()
     }).catch((err) => {
       setError(`${err}`);
     }).finally(() => {
@@ -78,12 +90,16 @@ export default function ContextLayerManagementSave(props: ModalOpenProps) {
     );
   }
   return (
-    <div>
+    <>
+      <ToolbarAction onClick={onOpenToggle}>
+        <MdOutlineSave/>
+        <span className="maputnik-icon-text">Save</span>
+      </ToolbarAction>
       <Modal
         data-wd-key="modal:open"
-        isOpen={props.isOpen}
+        isOpen={isOpen}
         onOpenToggle={() => onOpenToggle()}
-        title={'Save style (' + props.style?.name + ')'}
+        title={'Save style - ' + styleName}
       >
         {errorElement}
 
@@ -108,19 +124,21 @@ export default function ContextLayerManagementSave(props: ModalOpenProps) {
               <InputButton
                 data-wd-key="modal:open.url.button"
                 type="submit"
-                className="maputnik-big-button"
-                disabled={!props.style || saving}
+                className="maputnik-big-button save-button"
+                disabled={!props.mapStyle || saving}
               >
                 Save
               </InputButton>
+
               <span style={{ margin: "0 2px" }}/>
+
               <InputButton
                 data-wd-key="modal:open.url.button"
                 type="submit"
-                className="maputnik-big-button"
-                disabled={!props.style || saving}
+                className="maputnik-big-button save-as-button"
+                disabled={!props.mapStyle || saving}
               >
-                Save as and make it default
+                Save as
               </InputButton>
             </div>
             {
@@ -132,6 +150,6 @@ export default function ContextLayerManagementSave(props: ModalOpenProps) {
           </form>
         </section>
       </Modal>
-    </div>
+    </>
   )
 }
