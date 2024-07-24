@@ -7,6 +7,8 @@ import pkgJson from '../../package.json'
 //@ts-ignore
 import maputnikLogo from 'maputnik-design/logos/logo-color.svg?inline'
 import CloudNativeGIS from "./CloudNativeGIS/Main.tsx";
+import type { StyleSpecification } from "maplibre-gl";
+import StyleFunction from "../libs/style.ts";
 
 // This is required because of <https://stackoverflow.com/a/49846426>, there isn't another way to detect support that I'm aware of.
 const browser = detect();
@@ -227,7 +229,28 @@ export default class AppToolbar extends React.Component<AppToolbarProps> {
           {/*</ToolbarAction>*/}
           {/*  -------------------------------------- */}
           <CloudNativeGIS
-            onStyleOpen={this.props.onStyleOpen}
+            onStyleOpen={(style: StyleSpecification) => {
+              // ----------------------------------------------------
+              // Add basemap
+              if (!style.sources) {
+                style.sources = {}
+              }
+              style.sources.openstreetmap = {
+                tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+                type: 'raster'
+              }
+              style.layers = [
+                {
+                  "id": "openstreetmap",
+                  "type": "raster",
+                  "source": "openstreetmap"
+                }, ...style.layers
+              ]
+              // ----------------------------------------------------
+
+              const mapStyle = StyleFunction.ensureStyleValidity(style)
+              this.props.onStyleOpen(mapStyle)
+            }}
             mapStyle={this.props.mapStyle}
             ToolbarAction={ToolbarAction}
           />

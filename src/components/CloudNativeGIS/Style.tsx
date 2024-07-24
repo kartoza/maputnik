@@ -3,7 +3,6 @@ import { ToolbarSelect } from "../AppToolbar.tsx";
 import { DataProps } from "./Main.tsx";
 import CloudNativeGISSave from "./Save.tsx";
 import Modal from "../Modal.tsx";
-import StyleFunction from "../../libs/style.ts";
 
 type ModalOpenProps = {
   data: DataProps
@@ -32,27 +31,8 @@ export default function CloudNativeGISStyle(props: ModalOpenProps) {
       .then(function (response) {
         return response.json();
       })
-      .then((body) => {
-        // ----------------------------------------------------
-        // Add basemap
-        if (!body.sources) {
-          body.sources = {}
-        }
-        body.sources.openstreetmap = {
-          tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-          type: 'raster'
-        }
-        body.layers = [
-          {
-            "id": "openstreetmap",
-            "type": "raster",
-            "source": "openstreetmap"
-          }, ...body.layers
-        ]
-        // ----------------------------------------------------
-
-        const mapStyle = StyleFunction.ensureStyleValidity(body)
-        props.onStyleOpen(mapStyle)
+      .then((style) => {
+        props.onStyleOpen(style)
         setIsOpen(false)
       })
       .catch((err) => {

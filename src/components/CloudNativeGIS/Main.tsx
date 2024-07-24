@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import Modal from '../Modal'
 import CloudNativeGISStyle from "./Style.tsx";
+import { ToolbarAction } from "../AppToolbar.tsx";
+import { MdOutlineSave } from "react-icons/md";
 
 export type StyleProps = {
   id: number,
@@ -19,7 +21,7 @@ type ModalOpenProps = {
   onStyleOpen(...args: unknown[]): unknown
 };
 
-export default function CloudNativeGIS(props: ModalOpenProps) {
+function CloudNativeGISByLayer(props: ModalOpenProps) {
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<DataProps | undefined>(undefined);
 
@@ -84,3 +86,58 @@ export default function CloudNativeGIS(props: ModalOpenProps) {
   )
 }
 
+function CloudNativeGISByStyleInput(props: ModalOpenProps) {
+  useEffect(() => {
+    // When input style presented, use it
+    // @ts-ignore
+    if (inputStyle) {
+      // @ts-ignore
+      props.onStyleOpen(inputStyle)
+    }
+  }, [])
+
+  const updateStyle = () => {
+    const parentWindow = window.opener?.parent;
+    if (parentWindow) {
+      try {
+        parentWindow.postMessage(props.mapStyle);
+        window.close();
+      } catch (err) {
+        /* empty */
+      }
+    }
+  }
+
+  return <>
+    <div style={{
+      display: "flex",
+      height: "100%",
+      flexGrow: 1,
+      alignItems: "center"
+    }}>
+      <div></div>
+    </div>
+    <ToolbarAction onClick={updateStyle}>
+      <MdOutlineSave/>
+      <span className="maputnik-icon-text">Save</span>
+    </ToolbarAction>
+  </>
+}
+
+export default function CloudNativeGIS(props: ModalOpenProps) {
+  /**Cloud native GIS component*/
+  let style = null
+  try {
+    // @ts-ignore
+    style = inputStyle
+  } catch (err) {
+    /* empty */
+  }
+
+  // @ts-ignore
+  if (style) {
+    return <CloudNativeGISByStyleInput {...props}/>
+  } else {
+    return <CloudNativeGISByLayer {...props}/>
+  }
+}
