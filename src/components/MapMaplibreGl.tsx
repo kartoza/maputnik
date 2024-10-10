@@ -7,6 +7,7 @@ import MapMaplibreGlLayerPopup from './MapMaplibreGlLayerPopup'
 import MapMaplibreGlFeaturePropertyPopup, { InspectFeature } from './MapMaplibreGlFeaturePropertyPopup'
 import Color from 'color'
 import ZoomControl from '../libs/zoomcontrol'
+import { Protocol } from "pmtiles";
 import { HighlightedLayer, colorHighlightedLayer } from '../libs/highlight'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import '../maplibregl.css'
@@ -140,6 +141,8 @@ export default class MapMaplibreGl extends React.Component<MapMaplibreGlProps, M
     } satisfies MapOptions;
 
     const map = new MapLibreGl.Map(mapOpts);
+    let protocol = new Protocol();
+    MapLibreGl.addProtocol("pmtiles", protocol.tile);
 
     const mapViewChange = () => {
       const center = map.getCenter();
