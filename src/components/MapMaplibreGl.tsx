@@ -1,6 +1,13 @@
 import React, {type JSX} from 'react'
 import ReactDOM from 'react-dom'
-import MapLibreGl, {LayerSpecification, LngLat, Map, MapOptions, SourceSpecification, StyleSpecification} from 'maplibre-gl'
+import MapLibreGl, {
+  LayerSpecification,
+  LngLat,
+  Map,
+  MapOptions,
+  SourceSpecification,
+  StyleSpecification
+} from 'maplibre-gl'
 import MaplibreInspect from '@maplibre/maplibre-gl-inspect'
 import colors from '@maplibre/maplibre-gl-inspect/lib/colors'
 import MapMaplibreGlLayerPopup from './MapMaplibreGlLayerPopup'
@@ -106,6 +113,23 @@ export default class MapMaplibreGl extends React.Component<MapMaplibreGlProps, M
 
     const styleWithTokens = this.props.replaceAccessTokens(this.props.mapStyle);
     if (map) {
+      // TODO:
+      //  Cloud native GIS load image on fly
+      (async () => {
+        try {
+          console.log(styleWithTokens?.layers)
+          if (styleWithTokens?.layers) {
+            for (const layer of styleWithTokens.layers) {
+              if (layer.type === "symbol" && layer?.layout && layer.layout["icon-image"]) {
+                await this.loadImageToMap(map, ""+ layer.layout["icon-image"]);
+              }
+            }
+          }
+        } catch (err) {
+          console.log(err)
+        }
+      })()
+
       // Maplibre GL now does diffing natively so we don't need to calculate
       // the necessary operations ourselves!
       // We also need to update the style for inspect to work properly
@@ -213,6 +237,24 @@ export default class MapMaplibreGl extends React.Component<MapMaplibreGlProps, M
     map.on("dragend", mapViewChange);
     map.on("zoomend", mapViewChange);
   }
+
+  loadImageToMap = async (map: Map, id: string) => {
+    if (!id.includes('http')) {
+      return;
+    }
+    if (map.listImages().includes(id)) {
+      map.removeImage(id);
+    }
+    const url = id;
+    let image = null;
+    try {
+      image = await map.loadImage(url);
+      map.addImage(url, image.data);
+    } catch (err) {
+      console.log(err)
+    }
+    return image
+  };
 
   onLayerSelectById = (id: string) => {
     const index = this.props.mapStyle.layers.findIndex(layer => layer.id === id);
