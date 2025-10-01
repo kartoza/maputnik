@@ -10,6 +10,7 @@ import InputFont, { FieldFontProps } from './InputFont'
 import InputAutocomplete, { InputAutocompleteProps } from './InputAutocomplete'
 import InputEnum, { InputEnumProps } from './InputEnum'
 import capitalize from 'lodash.capitalize'
+import { MdFolder } from 'react-icons/md'
 
 const iconProperties = ['background-pattern', 'fill-pattern', 'line-pattern', 'fill-extrusion-pattern', 'icon-image']
 
@@ -119,6 +120,35 @@ export default class SpecField extends React.Component<SpecFieldProps> {
   }
 
   render() {
+    if (this.props.fieldName === 'icon-image'){
+      try {
+        // @ts-ignore
+        if (browseIconUrl) {
+          return (
+            <div data-wd-key={"spec-field:"+this.props.fieldName} style={{ display: 'flex', flexDirection: 'row', alignItems: "flex-start" }}>
+              <button
+                // @ts-ignore
+                class="maputnik-button maputnik-make-zoom-function"
+                onClick={() =>{
+                  // @ts-ignore
+                  window.open(browseIconUrl, "maputnik", "popup=true");
+                  window.addEventListener('message', (event) => {
+                    if (event.data?.iconUrl) {
+                      this.props.onChange!(this.props.fieldName, event.data.iconUrl);
+                    }
+                  }, false);
+                }}
+              >
+                <MdFolder/>
+              </button>
+              {this.childNodes()}
+            </div>
+          );
+        }
+      } catch (err) {
+
+      }
+    }
     return (
       <div data-wd-key={"spec-field:"+this.props.fieldName}>
         {this.childNodes()}
